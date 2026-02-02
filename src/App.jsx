@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -28,26 +28,26 @@ export default function App() {
       {isLoggedIn && !hideNavbar && <Navbar />}
 
       <Routes>
-        {/* PUBLIC */}
-        <Route path="/" element={<Home />} />
-        <Route path="/recipes/:id" element={<RecipeDetails />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/favorites" element={<Favorites />} />
+  {/* PUBLIC */}
+  <Route path="/" element={<Navigate to="/register" />} />
+  <Route path="/recipes/:id" element={<RecipeDetails />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
+  <Route path="/favorites" element={<Favorites />} />
 
-        {/* MEAL PLANS */}
-        <Route path="/meal-plan" element={<MyMealPlans />} />
-        <Route path="/meal-plan/create" element={<MealPlanner />} />
-        <Route path="/meal-plans/:id" element={<MealPlanDetails />} />
-        <Route path="/meal-plans/:id/shopping-list" element={<ShoppingList />} />
+  {/* MEAL PLANS */}
+  <Route path="/meal-plan" element={<MyMealPlans />} />
+  <Route path="/meal-plan/create" element={<MealPlanner />} />
+  <Route path="/meal-plans/:id" element={<MealPlanDetails />} />
+  <Route path="/meal-plans/:id/shopping-list" element={<ShoppingList />} />
 
-        {/* PROTECTED */}
-        <Route element={<ProtectedRoute />}>
-          <Route path="/add-recipe" element={<AddRecipe />} />
-          <Route path="/edit-recipe/:id" element={<EditRecipe />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-        </Route>
-      </Routes>
+  {/* PROTECTED */}
+  <Route element={<ProtectedRoute />}>
+    <Route path="/add-recipe" element={<AddRecipe />} />
+    <Route path="/edit-recipe/:id" element={<EditRecipe />} />
+    <Route path="/dashboard" element={<Dashboard />} />
+  </Route>
+</Routes>
     </>
   );
 }
