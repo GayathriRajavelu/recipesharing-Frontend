@@ -11,7 +11,7 @@ export default function ShoppingList() {
   useEffect(() => {
     const fetchShoppingList = async () => {
       try {
-        const res = await api.get(`/meal-plans/${id}/shopping-list`);
+        const res = await api.get(`/api/meal-plans/${id}/shopping-list`);
         setShoppingList(res.data || null);
       } catch (err) {
         console.error(err);

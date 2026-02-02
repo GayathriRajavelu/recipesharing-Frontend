@@ -20,7 +20,7 @@ export default function MealPlanner() {
 
   useEffect(() => {
     api
-      .get("/recipes")
+      .get("/api/recipes")
       .then((res) => setRecipes(res.data))
       .catch((err) => console.error("Recipe load error:", err));
   }, []);
@@ -49,7 +49,7 @@ export default function MealPlanner() {
     }
 
     try {
-      await api.post("/meal-plans", { weekStart, meals });
+      await api.post("/api/meal-plans", { weekStart, meals });
       alert("Meal plan created!");
       navigate("/meal-plan");
     } catch (err) {

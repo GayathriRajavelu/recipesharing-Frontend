@@ -6,7 +6,7 @@ export default function Favorites() {
   const [recipes, setRecipes] = useState([]);
 
   useEffect(() => {
-    api.get("/users/me").then(res => {
+    api.get("/api/users/me").then(res => {
       setRecipes(res.data.favorites);
     });
   }, []);

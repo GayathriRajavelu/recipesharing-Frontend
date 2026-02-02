@@ -7,7 +7,7 @@ export default function Home() {
   const [search, setSearch] = useState(""); // 🔹 added for search
 
   useEffect(() => {
-    api.get("/recipes").then(res => setRecipes(res.data));
+    api.get("/api/recipes").then(res => setRecipes(res.data));
   }, []);
 
   // 🔹 Filter recipes by name or ingredients

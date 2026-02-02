@@ -29,7 +29,7 @@ export default function App() {
 
       <Routes>
   {/* PUBLIC */}
-  <Route path="/" element={<Navigate to="/register" />} />
+  <Route path="/" element={isLoggedIn ? <Home /> : <Navigate to="/login" />} />
   <Route path="/recipes/:id" element={<RecipeDetails />} />
   <Route path="/login" element={<Login />} />
   <Route path="/register" element={<Register />} />

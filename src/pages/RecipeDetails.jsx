@@ -19,10 +19,10 @@ export default function RecipeDetails() {
 
   const load = async () => {
     try {
-      const recipeRes = await api.get(`/recipes/${id}`);
+      const recipeRes = await api.get(`/api/recipes/${id}`);
       setRecipe(recipeRes.data);
 
-      const meRes = await api.get("/users/me");
+      const meRes = await api.get("/api/users/me");
       setMe(meRes.data);
 
       setIsFavorited(meRes.data.favorites.includes(id));
@@ -42,42 +42,42 @@ export default function RecipeDetails() {
   const isOwner = me && recipe.user._id === me._id;
 
   const toggleLike = async () => {
-    const res = await api.put(`/recipes/${id}/like`);
+    const res = await api.put(`/api/recipes/${id}/like`);
     setRecipe(res.data);
   };
 
   const submitRating = async (value) => {
     setRating(value);
-    const res = await api.put(`/recipes/${id}/rate`, { value });
+    const res = await api.put(`/api/recipes/${id}/rate`, { value });
     setRecipe(res.data);
   };
 
   const submitComment = async () => {
     if (!comment.trim()) return;
-    const res = await api.post(`/recipes/${id}/comment`, { text: comment });
+    const res = await api.post(`/api/recipes/${id}/comment`, { text: comment });
     setRecipe(res.data);
     setComment("");
   };
 
   const deleteComment = async (commentId) => {
-    const res = await api.delete(`/recipes/${id}/comment/${commentId}`);
+    const res = await api.delete(`/api/recipes/${id}/comment/${commentId}`);
     setRecipe(res.data);
   };
 
   const toggleFavorite = async () => {
-    const res = await api.put(`/recipes/${id}/favorite`);
+    const res = await api.put(`/api/recipes/${id}/favorite`);
     setIsFavorited(res.data.favorites.includes(id));
   };
 
   const toggleFollow = async () => {
-    await api.put(`/users/${recipe.user._id}/follow`);
+    await api.put(`/api/users/${recipe.user._id}/follow`);
     setIsFollowing(!isFollowing);
   };
 
   const handleDeleteRecipe = async () => {
     if (!window.confirm("Delete this recipe?")) return;
     try {
-      await api.delete(`/recipes/${id}`);
+      await api.delete(`/api/recipes/${id}`);
       navigate("/");
     } catch (err) {
       alert("Failed to delete recipe");
@@ -269,9 +269,9 @@ export default function RecipeDetails() {
             {me && c.user?._id === me._id && (
               <button
                 onClick={() => deleteComment(c._id)}
-                className="text-red-500 hover:underline"
+                className="text-black-500 hover:underline"
               >
-                Delete
+                🗑
               </button>
             )}
           </div>

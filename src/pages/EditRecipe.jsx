@@ -17,7 +17,7 @@ export default function EditRecipe() {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const res = await api.get(`/recipes/${id}`);
+        const res = await api.get(`/api/recipes/${id}`);
         const recipe = res.data;
 
         setTitle(recipe.title);
@@ -50,7 +50,7 @@ export default function EditRecipe() {
         formData.append("media", media); // 👈 optional new image/video
       }
 
-      await api.put(`/recipes/${id}`, formData, {
+      await api.put(`/api/recipes/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

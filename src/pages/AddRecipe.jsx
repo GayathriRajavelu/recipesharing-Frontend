@@ -27,7 +27,7 @@ export default function AddRecipe() {
         formData.append("media", media);
       }
 
-      await api.post("/recipes", formData); // ✅ no headers needed
+      await api.post("/api/recipes", formData); // ✅ no headers needed
 
       alert("Recipe added successfully 🎉");
       navigate("/");

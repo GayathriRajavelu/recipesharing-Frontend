@@ -22,7 +22,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await api.get("/users/dashboard");
+        const res = await api.get("api/users/dashboard");
         setUser(res.data.user);
         setRecipes(res.data.recipes || []);
         setBio(res.data.user.bio || "");
@@ -39,7 +39,7 @@ export default function Dashboard() {
     e.preventDefault();
     setSavingBio(true);
     try {
-      const res = await api.put("/users/update-profile", { bio });
+      const res = await api.put("/api/users/update-profile", { bio });
       setUser(res.data);
       setEditingBio(false);
     } catch (err) {
@@ -65,7 +65,7 @@ export default function Dashboard() {
     formData.append("profilePic", selectedPic);
 
     try {
-      const res = await api.put("/users/update-profile", formData);
+      const res = await api.put("/api/users/update-profile", formData);
       setUser(res.data);
       setSelectedPic(null);
       setPreviewPic(null);

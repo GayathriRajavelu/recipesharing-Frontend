@@ -14,7 +14,7 @@ export default function MyMealPlans() {
   useEffect(() => {
     const fetchPlans = async () => {
       try {
-        const res = await api.get("/meal-plans/mine");
+        const res = await api.get("/api/meal-plans/mine");
         setPlans(res.data);
       } catch (err) {
         console.error(err.response?.data || err.message);
@@ -30,7 +30,7 @@ export default function MyMealPlans() {
     if (!window.confirm("Delete this meal plan?")) return;
 
     try {
-      await api.delete(`/meal-plans/${id}`);
+      await api.delete(`/api/meal-plans/${id}`);
       setPlans((prev) => prev.filter((p) => p._id !== id));
     } catch (err) {
       console.error(err);

@@ -8,7 +8,7 @@ export default function MealPlanDetails() {
 
   useEffect(() => {
     api
-      .get(`/meal-plans/${id}`)
+      .get(`/api/meal-plans/${id}`)
       .then((res) => setPlan(res.data))
       .catch((err) => console.error(err));
   }, [id]);

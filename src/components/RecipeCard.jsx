@@ -7,7 +7,7 @@ export default function RecipeCard({ recipe }) {
 
   const handleLike = async () => {
     try {
-      const res = await api.put(`/recipes/${recipe._id}/like`);
+      const res = await api.put(`/api/recipes/${recipe._id}/like`);
       setLikes(res.data.likes.length);
     } catch (err) {
       console.error(err);

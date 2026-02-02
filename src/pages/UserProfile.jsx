@@ -2,7 +2,7 @@ import api from "../api/axios";
 
 export default function UserProfile({ userId }) {
   const followUser = async () => {
-    await api.put(`/users/follow/${userId}`);
+    await api.put(`/api/users/follow/${userId}`);
     alert("Followed");
   };
 

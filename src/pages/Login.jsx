@@ -10,7 +10,7 @@ export default function Login() {
  const submit = async (e) => {
   e.preventDefault();
   try {
-    const res = await api.post("/auth/login", { email, password });
+    const res = await api.post("/api/auth/login", { email, password });
 
     // SAVE AUTH DATA
     localStorage.setItem("token", res.data.token);
@@ -19,8 +19,7 @@ export default function Login() {
 
     
     console.log("Login success:", res.data);
-    navigate("/");
-    window.location.reload();   // force navbar to update
+    navigate("/dashboard");
   } catch (err) {
     console.error("Login error:", err.response?.data || err.message);
     alert(err.response?.data?.message || "Login failed");
