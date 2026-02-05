@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axios";
+import IngredientInput from "../components/IngredientInput";
 
 export default function EditRecipe() {
   const { id } = useParams();
@@ -8,34 +9,37 @@ export default function EditRecipe() {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState("");
+  const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
   const [media, setMedia] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔹 Fetch existing recipe
+  // Load recipe
   useEffect(() => {
-    const fetchRecipe = async () => {
+    const load = async () => {
       try {
         const res = await api.get(`/api/recipes/${id}`);
-        const recipe = res.data;
+        const r = res.data;
 
-        setTitle(recipe.title);
-        setDescription(recipe.description);
-        setIngredients(recipe.ingredients.join(", "));
-        setSteps(recipe.steps.join(", "));
+        setTitle(r.title);
+        setDescription(r.description);
+        setIngredients(r.ingredients || []);
+        setSteps(Array.isArray(r.steps) ? r.steps.join("\n") : r.steps);
+        setVideoUrl(r.videoUrl || "");
+        setPreview(r.mediaUrl || null);
+
         setLoading(false);
       } catch (err) {
-        console.error(err.response?.data || err.message);
         alert("Failed to load recipe");
         navigate("/");
       }
     };
 
-    fetchRecipe();
+    load();
   }, [id, navigate]);
 
-  // 🔹 Update recipe
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -43,23 +47,19 @@ export default function EditRecipe() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("ingredients", ingredients);
+      formData.append("ingredients", JSON.stringify(ingredients));
       formData.append("steps", steps);
+      formData.append("videoUrl", videoUrl);
 
       if (media) {
-        formData.append("media", media); // 👈 optional new image/video
+        formData.append("media", media);
       }
 
-      await api.put(`/api/recipes/${id}`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await api.put(`/api/recipes/${id}`, formData);
 
-      alert("Recipe updated successfully");
+      alert("Recipe updated successfully 🎉");
       navigate(`/recipes/${id}`);
     } catch (err) {
-      console.error(err.response?.data || err.message);
       alert("Failed to update recipe");
     }
   };
@@ -84,7 +84,6 @@ export default function EditRecipe() {
 
         <input
           type="text"
-          placeholder="Recipe Title"
           className="w-full p-3 border rounded-lg"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -92,36 +91,60 @@ export default function EditRecipe() {
         />
 
         <textarea
-          placeholder="Description"
           className="w-full p-3 border rounded-lg"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
 
-        <textarea
-          placeholder="Ingredients (comma separated)"
-          className="w-full p-3 border rounded-lg"
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-          required
-        />
+        {/* Ingredient chips */}
+        <IngredientInput value={ingredients} onChange={setIngredients} />
 
         <textarea
-          placeholder="Steps (comma separated)"
           className="w-full p-3 border rounded-lg"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
+          placeholder="Steps (one per line)"
           required
         />
 
-        {/* Optional media update */}
-        <input
-          type="file"
-          accept="image/*,video/*"
-          className="w-full p-2 border rounded-lg"
-          onChange={(e) => setMedia(e.target.files[0])}
-        />
+        {/* Media upload */}
+        <div>
+          <label className="block font-semibold mb-1">
+            Recipe Image or Video
+          </label>
+
+          <input
+            type="file"
+            accept="image/*,video/*"
+            className="w-full p-2 border rounded-lg"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+
+              setMedia(file);
+              setPreview(URL.createObjectURL(file));
+            }}
+          />
+
+          {preview && (
+            <div className="mt-3 rounded overflow-hidden">
+              {preview.match(/\.(mp4|webm|ogg)$/i) ? (
+                <video
+                  src={preview}
+                  controls
+                  className="w-full h-64 object-cover rounded"
+                />
+              ) : (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-64 object-cover rounded"
+                />
+              )}
+            </div>
+          )}
+        </div>
 
         <button
           type="submit"

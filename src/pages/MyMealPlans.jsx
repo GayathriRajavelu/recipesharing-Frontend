@@ -80,8 +80,17 @@ export default function MyMealPlans() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50 p-6">
-      <h2 className="text-4xl font-extrabold text-orange-600 mb-6 text-center">
+
+     <div
+      className="min-h-screen p-6 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage:
+          "url('https://img.freepik.com/premium-photo/variety-indian-food-different-dishes-snacks-dark-rustic-background-pilaf-butter-chicken-curry-rice-palak-paneer-chicken-tikka-dal-soup-naan-bread-assortment-chutney-copy-space_92134-1884.jpg')"
+      }}
+    >
+
+    <div className="min-h-screen p-6">
+      <h2 className="text-3xl font-extrabold text-white mb-6 text-center">
         📅 My Meal Plans
       </h2>
 
@@ -116,7 +125,7 @@ export default function MyMealPlans() {
       </div>
 
       {filteredPlans.length === 0 && (
-        <p className="text-center text-gray-500">
+        <p className="text-center text-white">
           No matching meal plans found 🍽️
         </p>
       )}
@@ -177,6 +186,7 @@ export default function MyMealPlans() {
           );
         })}
       </div>
+    </div>
     </div>
   );
 }

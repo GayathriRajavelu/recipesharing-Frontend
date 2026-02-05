@@ -37,7 +37,7 @@ export default function App() {
 
   {/* MEAL PLANS */}
   <Route path="/meal-plan" element={<MyMealPlans />} />
-  <Route path="/meal-plan/create" element={<MealPlanner />} />
+  <Route path="/create-plan" element={<MealPlanner />} />
   <Route path="/meal-plans/:id" element={<MealPlanDetails />} />
   <Route path="/meal-plans/:id/shopping-list" element={<ShoppingList />} />
 

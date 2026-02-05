@@ -20,10 +20,7 @@ export default function MainNavbar() {
         {/* Desktop Menu */}
         <div className="hidden md:flex gap-6 items-center">
           <Link to="/" className="hover:text-orange-500 font-medium">Home</Link>
-          <Link to="/add-recipe" className="hover:text-orange-500 font-medium">Add Recipe</Link>
           <Link to="/favorites" className="hover:text-orange-500 font-medium">Favorites</Link>
-          <Link to="/meal-plan" className="hover:text-orange-500 font-medium">Meal Plans</Link>
-          <Link to="/meal-plan/create" className="hover:text-orange-500 font-medium">+ Create Plan</Link>
           <Link to="/dashboard" className="hover:text-orange-500 font-medium">Dashboard</Link>
 
           <button
@@ -65,10 +62,7 @@ export default function MainNavbar() {
 
         <div className="flex flex-col gap-5">
           <Link to="/" onClick={() => setOpen(false)} className="hover:text-orange-500">Home</Link>
-          <Link to="/add-recipe" onClick={() => setOpen(false)} className="hover:text-orange-500">Add Recipe</Link>
           <Link to="/favorites" onClick={() => setOpen(false)} className="hover:text-orange-500">Favorites</Link>
-          <Link to="/meal-plan" onClick={() => setOpen(false)} className="hover:text-orange-500">Meal Plans</Link>
-          <Link to="/meal-plan/create" onClick={() => setOpen(false)} className="hover:text-orange-500">+ Create Plan</Link>
           <Link to="/dashboard" onClick={() => setOpen(false)} className="hover:text-orange-500">Dashboard</Link>
 
           <button

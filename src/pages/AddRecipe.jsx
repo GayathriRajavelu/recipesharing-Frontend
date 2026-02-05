@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import IngredientInput from "../components/IngredientInput";
 
 export default function AddRecipe() {
   const navigate = useNavigate();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [ingredients, setIngredients] = useState("");
+  const [ingredients, setIngredients] = useState([]);
   const [steps, setSteps] = useState("");
+  const [videoUrl, setVideoUrl] = useState(""); // Tutorial Video URL
   const [media, setMedia] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -20,14 +23,15 @@ export default function AddRecipe() {
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
-      formData.append("ingredients", ingredients);
+      formData.append("ingredients", JSON.stringify(ingredients));
       formData.append("steps", steps);
+     
 
       if (media) {
         formData.append("media", media);
       }
 
-      await api.post("/api/recipes", formData); // ✅ no headers needed
+      await api.post("/api/recipes", formData);
 
       alert("Recipe added successfully 🎉");
       navigate("/");
@@ -66,28 +70,55 @@ export default function AddRecipe() {
           required
         />
 
-        <textarea
-          placeholder="Ingredients (comma separated)"
-          className="w-full p-3 border rounded-lg"
-          value={ingredients}
-          onChange={(e) => setIngredients(e.target.value)}
-          required
-        />
+        {/* INGREDIENT CHIP INPUT */}
+        <IngredientInput value={ingredients} onChange={setIngredients} />
 
         <textarea
-          placeholder="Steps (comma separated)"
+          placeholder="Steps (one per line is recommended)"
           className="w-full p-3 border rounded-lg"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
           required
         />
 
-        <input
-          type="file"
-          accept="image/*,video/*"
-          className="w-full p-2 border rounded-lg"
-          onChange={(e) => setMedia(e.target.files[0])}
-        />
+      
+        {/* Image OR Video Upload */}
+        <div>
+          <label className="block font-semibold mb-1">
+            Recipe Image or Video
+          </label>
+
+          <input
+            type="file"
+            accept="image/*,video/*"
+            className="w-full p-2 border rounded-lg"
+            onChange={(e) => {
+              const file = e.target.files[0];
+              if (!file) return;
+
+              setMedia(file);
+              setPreview(URL.createObjectURL(file));
+            }}
+          />
+
+          {preview && (
+            <div className="mt-3 rounded overflow-hidden">
+              {media.type.startsWith("image") ? (
+                <img
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-64 object-cover rounded"
+                />
+              ) : (
+                <video
+                  src={preview}
+                  controls
+                  className="w-full h-64 object-cover rounded"
+                />
+              )}
+            </div>
+          )}
+        </div>
 
         <button
           type="submit"

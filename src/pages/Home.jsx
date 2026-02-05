@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import api from "../api/axios";
 import RecipeCard from "../components/RecipeCard";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Home() {
   const [recipes, setRecipes] = useState([]);
   const [search, setSearch] = useState(""); // 🔹 added for search
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     api.get("/api/recipes").then(res => setRecipes(res.data));
@@ -24,21 +28,37 @@ export default function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-orange-50 p-6">
+       <div
+      className="min-h-screen p-6 bg-cover bg-center bg-no-repeat"
+      style={{
+        backgroundImage:
+          "url('https://png.pngtree.com/thumb_back/fh260/background/20221107/pngtree-italian-food-ingredients-frame-cuisine-recipe-kitchen-photo-image_40253744.jpg')"
+      }}
+    >
+
+
+    <div className="min-h-screen p-6">
       <h1 className="text-3xl font-bold text-center text-orange-600 mb-8">
         🍲 Explore Delicious Recipes
       </h1>
 
       {/* 🔍 Search Bar */}
-      <div className="flex justify-center mb-8">
-        <input
-          type="text"
-          placeholder="Search by recipe name or ingredients..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full max-w-xl p-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
-        />
-      </div>
+     <div className="flex justify-center items-center gap-4 mb-8">
+  <input
+    type="text"
+    placeholder="Search by recipe name or ingredients..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    className="w-full max-w-xl p-3 rounded-lg border border-orange-300 focus:outline-none focus:ring-2 focus:ring-orange-400"
+  />
+
+  <button
+    onClick={() => navigate("/add-recipe")}
+    className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md transition"
+  >
+    Add Recipe
+  </button>
+</div>
 
       {/* 🧩 Recipes Grid */}
       <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
@@ -53,6 +73,7 @@ export default function Home() {
           No recipes found.
         </p>
       )}
+    </div>
     </div>
   );
 }

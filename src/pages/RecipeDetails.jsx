@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect,useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
@@ -12,7 +12,10 @@ export default function RecipeDetails() {
   const [rating, setRating] = useState(0);
   const [isFavorited, setIsFavorited] = useState(false);
   const [isFollowing, setIsFollowing] = useState(false);
-
+  const videoRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  
   useEffect(() => {
     load();
   }, [id]);
@@ -98,12 +101,68 @@ export default function RecipeDetails() {
 
         {/* HERO */}
         <div className="relative rounded-[2rem] overflow-hidden shadow-xl">
-          {recipe.mediaUrl &&
-            (recipe.mediaType === "video" ? (
-              <video src={recipe.mediaUrl} controls className="w-full h-[460px] object-cover" />
-            ) : (
-              <img src={recipe.mediaUrl} alt={recipe.title} className="w-full h-[460px] object-cover" />
-            ))}
+         
+{(recipe.mediaUrl || recipe.videoUrl) && (
+  <>
+    {/* Uploaded video */}
+    {recipe.mediaUrl && recipe.mediaType === "video" && (
+      <div className="relative w-full h-[460px] bg-black">
+
+  <video
+    ref={videoRef}
+    src={recipe.mediaUrl}
+    className="w-full h-full object-cover"
+    playsInline
+    muted={false}
+    onPlay={() => setIsPlaying(true)}
+    onPause={() => setIsPlaying(false)}
+  />
+
+  {/* Play / Pause Overlay */}
+  <button
+    type="button"
+    onClick={() => {
+      const video = videoRef.current;
+      if (!video) return;
+
+      if (video.paused) {
+        video.play().catch(err => console.log("Play failed:", err));
+      } else {
+        video.pause();
+      }
+    }}
+    className="absolute inset-0 z-10 flex items-center justify-center bg-black/40 hover:bg-black/50 transition"
+  >
+    <span className="text-white text-6xl select-none">
+      {isPlaying ? "⏸" : "▶"}
+    </span>
+  </button>
+
+</div>
+    )}
+
+    {/* Uploaded image */}
+    {recipe.mediaUrl && recipe.mediaType === "image" && (
+      <img
+        src={recipe.mediaUrl}
+        alt={recipe.title}
+        className="w-full h-[460px] object-cover"
+      />
+    )}
+
+    {/* Tutorial Video URL (YouTube / Vimeo) */}
+    {!recipe.mediaUrl && recipe.videoUrl && (
+      <iframe
+        className="w-full h-[460px]"
+        src={recipe.videoUrl
+          .replace("watch?v=", "embed/")
+          .replace("youtu.be/", "youtube.com/embed/")}
+        title="Recipe Video"
+        allowFullScreen
+      />
+    )}
+  </>
+)}
 
           <div className="absolute inset-0 bg-gradient-to-t from-orange-900/80 to-transparent p-10 flex flex-col justify-end">
             <h1 className="text-5xl font-extrabold text-white drop-shadow">
@@ -115,38 +174,6 @@ export default function RecipeDetails() {
                 by <span className="font-semibold text-white">{recipe.user.name}</span>
               </p>
 
-              <div className="flex gap-3">
-                {isOwner && (
-                  <>
-                    <button
-                      onClick={() => navigate(`/edit-recipe/${recipe._id}`)}
-                      className="px-5 py-2 rounded-full bg-white text-orange-600 font-semibold"
-                    >
-                      ✏️ Edit
-                    </button>
-
-                    <button
-                      onClick={handleDeleteRecipe}
-                      className="px-5 py-2 rounded-full bg-red-500 text-white font-semibold"
-                    >
-                      🗑 Delete
-                    </button>
-                  </>
-                )}
-
-                {me && recipe.user._id !== me._id && (
-                  <button
-                    onClick={toggleFollow}
-                    className={`px-6 py-2 rounded-full font-semibold ${
-                      isFollowing
-                        ? "bg-white/80 text-black"
-                        : "bg-orange-500 text-white"
-                    }`}
-                  >
-                    {isFollowing ? "Following" : "Follow"}
-                  </button>
-                )}
-              </div>
             </div>
           </div>
         </div>
@@ -155,36 +182,62 @@ export default function RecipeDetails() {
        {/* ACTION BAR */}
       <div className="bg-white/80 backdrop-blur-xl rounded-2xl shadow-lg p-6 flex flex-wrap justify-between items-center gap-6">
 
-        <div className="flex gap-4">
-          <button
-            onClick={toggleLike}
-            className="px-6 py-2 rounded-full bg-red-100 text-red-600 font-semibold hover:bg-red-200"
-          >
-            ❤️ {recipe.likes.length}
-          </button>
+        <div className="flex flex-wrap gap-4 items-center">
 
-          <button
-            onClick={toggleFavorite}
-            className={`px-6 py-2 rounded-full font-semibold ${
-              isFavorited
-                ? "bg-orange-500 text-white"
-                : "bg-orange-100 text-orange-700"
-            }`}
-          >
-            {isFavorited ? "★ Saved" : "☆ Save"}
-          </button>
-        </div>
+  <button
+    onClick={toggleLike}
+    className="px-6 py-2 rounded-full bg-red-100 text-red-600 font-semibold hover:bg-red-200"
+  >
+    ❤️ {recipe.likes.length}
+  </button>
 
-        {/* AVERAGE RATING */}
-        <div className="flex items-center gap-3 bg-yellow-100 px-5 py-2 rounded-full shadow-inner">
-          <span className="text-yellow-500 text-2xl">★</span>
-          <span className="font-bold text-yellow-700 text-lg">
-            {averageRating}
-          </span>
-          <span className="text-sm text-gray-500">
-            ({recipe.ratings.length})
-          </span>
-        </div>
+  <button
+    onClick={toggleFavorite}
+    className={`px-6 py-2 rounded-full font-semibold ${
+      isFavorited
+        ? "bg-orange-500 text-white"
+        : "bg-orange-100 text-orange-700"
+    }`}
+  >
+    {isFavorited ? "★ Saved" : "☆ Save"}
+  </button>
+
+  {/* Follow button */}
+  {me && recipe.user._id !== me._id && (
+    <button
+      onClick={toggleFollow}
+      className={`px-6 py-2 rounded-full font-semibold transition ${
+        isFollowing
+          ? "bg-gray-200 text-gray-800"
+          : "bg-orange-500 text-white hover:bg-orange-600"
+      }`}
+    >
+      {isFollowing ? "Following" : "Follow"}
+    </button>
+  )}
+
+  {/* Owner buttons */}
+  {isOwner && (
+    <>
+      <button
+        onClick={() => navigate(`/edit-recipe/${recipe._id}`)}
+        className="px-6 py-2 rounded-full bg-blue-500 text-white hover:bg-blue-600"
+      >
+        ✏️ Recipe
+      </button>
+
+      <button
+        onClick={handleDeleteRecipe}
+        className="px-6 py-2 rounded-full bg-red-500 text-white hover:bg-red-600"
+      >
+        🗑 Delete
+      </button>
+    </>
+  )}
+
+</div>
+
+        
 
         {/* USER RATING */}
         <div className="flex gap-1">

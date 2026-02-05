@@ -47,7 +47,14 @@ export default function ShoppingList() {
     shoppingList && typeof shoppingList === "object" && !isArray;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-yellow-50 py-10 px-4">
+     <div
+      className="min-h-screen bg-repeat bg-[length:100%_auto]"
+      style={{
+        backgroundImage:
+          "url('https://img.freepik.com/free-photo/arrangement-black-friday-shopping-carts-with-copy-space_23-2148667047.jpg?semt=ais_hybrid&w=740&q=80')"
+      }}
+    >
+    <div className="min-h-screen  py-10 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 text-center">
@@ -128,6 +135,7 @@ export default function ShoppingList() {
           </p>
         )}
       </div>
+    </div>
     </div>
   );
 }
